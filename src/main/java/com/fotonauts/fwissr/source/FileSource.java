@@ -70,7 +70,7 @@ public class FileSource extends Source {
 
     private void mergeConfFile(SmarterMap result, File f) {
         SmarterMap conf = Fwissr.parseConfFile(f);
-        String confFileName = f.getName().replaceAll("\\.[^.]*", "");
+        String confFileName = f.getName().replaceAll("\\.[^.]*$", "");
         SmarterMap resultPart = result;
         if (!TOP_LEVEL_CONF_FILES.contains(confFileName) && options.get("top_level") != Boolean.TRUE) {
             for (String keyPart : confFileName.split("\\.")) {

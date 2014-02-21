@@ -34,24 +34,40 @@ public class TestFileSource {
         FileSource.fromPath(tmpConfDir.getRoot() + "/pouet.json");
     }
 
-    private SmarterMap testConf = SmarterMap.from(
-            "foo", "bar",
-            "cam", SmarterMap.from("en","bert")
-            );
+    private SmarterMap testConf1 = SmarterMap.from("foo", "bar", "cam", SmarterMap.from("en", "bert"));
 
     @Test
     public void testFetchJson() throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf.toJson());
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
         FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.json");
         SmarterMap fetched = s.fetchConf();
-        assertEquals(SmarterMap.from("test", testConf), fetched);
+        assertEquals(SmarterMap.from("test", testConf1), fetched);
     }
 
     @Test
     public void testFetchYaml() throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.yaml"), testConf.toYaml());
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.yaml"), testConf1.toYaml());
         FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.yaml");
         SmarterMap fetched = s.fetchConf();
-        assertEquals(SmarterMap.from("test", testConf), fetched);
+        assertEquals(SmarterMap.from("test", testConf1), fetched);
+    }
+
+    private SmarterMap testConf2 = SmarterMap.from("jean", "bon", "terieur", SmarterMap.from("alain", "alex"));
+
+    @Test
+    public void testFetchFromDir() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test1.json"), testConf1.toJson());
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test2.yaml"), testConf2.toYaml());
+        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString());
+        SmarterMap fetched = s.fetchConf();
+        assertEquals(SmarterMap.from("test1", testConf1, "test2", testConf2), fetched);
+    }
+
+    @Test
+    public void testMapFileNameToKeyParts() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.with.parts.json"), testConf1.toJson());
+        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString());
+        SmarterMap fetched = s.fetchConf();
+        assertEquals(SmarterMap.from("test", SmarterMap.from("with", SmarterMap.from("parts", testConf1))), fetched);
     }
 }
