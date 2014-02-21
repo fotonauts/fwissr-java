@@ -9,16 +9,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.ObjectWriter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 public class SmarterMap implements Map<String, Serializable>, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    protected static ObjectMapper jacksonObjectMapper = new ObjectMapper();
+    protected static ObjectMapper jsonObjectMapper = new ObjectMapper();
+    protected static ObjectMapper yamlObjectMapper = new ObjectMapper(new YAMLFactory());
 
     private AtomicBoolean frozen = new AtomicBoolean();
     private Map<String,Serializable> underlying;
@@ -95,7 +95,7 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
     @SuppressWarnings("unchecked")
     public SmarterMap clone() {
         try {
-            return new SmarterMap(jacksonObjectMapper.readValue(jacksonObjectMapper.writeValueAsBytes(underlying), Map.class));
+            return new SmarterMap(jsonObjectMapper.readValue(jsonObjectMapper.writeValueAsBytes(underlying), Map.class));
         } catch (IOException e) {
             throw new FwissrRuntimeException("failed to clone map: ", e); 
         }
@@ -136,7 +136,7 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
     }
     
     public String dump() {
-        ObjectWriter w = jacksonObjectMapper.writer().withDefaultPrettyPrinter();
+        ObjectWriter w = jsonObjectMapper.writer().withDefaultPrettyPrinter();
         try {
             return w.writeValueAsString(underlying);
         } catch (IOException e) {
@@ -145,7 +145,16 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
     }
 
     public String toJson() {
-        ObjectWriter w = jacksonObjectMapper.writer();
+        ObjectWriter w = jsonObjectMapper.writer();
+        try {
+            return w.writeValueAsString(underlying);
+        } catch (IOException e) {
+            throw new FwissrRuntimeException("failed to dump content");
+        }
+    }
+
+    public String toYaml() {
+        ObjectWriter w = yamlObjectMapper.writer();
         try {
             return w.writeValueAsString(underlying);
         } catch (IOException e) {

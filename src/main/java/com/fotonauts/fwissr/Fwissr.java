@@ -6,14 +6,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
 import com.fotonauts.fwissr.source.Source;
 
 public class Fwissr {
 
     private final static String MAIN_CONF_FILE = "fwissr.json"; 
-    protected static ObjectMapper jacksonObjectMapper = new ObjectMapper();
+    protected static ObjectMapper jsonObjectMapper = new ObjectMapper();
+    protected static ObjectMapper yamlObjectMapper = new ObjectMapper(new YAMLFactory());
 
     private File mainConfPath;
 
@@ -27,7 +29,10 @@ public class Fwissr {
             String extension = confFilePath.getName().replaceAll(".*\\.", "");
             switch (extension) {
             case "json":
-                return new SmarterMap(jacksonObjectMapper.readValue(confFilePath, Map.class));
+                return new SmarterMap(jsonObjectMapper.readValue(confFilePath, Map.class));
+            case "yaml":
+            case "yml":
+                return new SmarterMap(yamlObjectMapper.readValue(confFilePath, Map.class));
             }
             throw new FwissrRuntimeException("Unsupported conf file kind: " + confFilePath);
         } catch (IOException e) {

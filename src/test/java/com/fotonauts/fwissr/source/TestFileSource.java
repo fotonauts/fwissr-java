@@ -34,14 +34,23 @@ public class TestFileSource {
         FileSource.fromPath(tmpConfDir.getRoot() + "/pouet.json");
     }
 
+    private SmarterMap testConf = SmarterMap.from(
+            "foo", "bar",
+            "cam", SmarterMap.from("en","bert")
+            );
+
     @Test
     public void testFetchJson() throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        SmarterMap testConf = SmarterMap.from(
-                "foo", "bar",
-                "cam", SmarterMap.from("en","bert")
-                );
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf.toJson());
         FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.json");
+        SmarterMap fetched = s.fetchConf();
+        assertEquals(SmarterMap.from("test", testConf), fetched);
+    }
+
+    @Test
+    public void testFetchYaml() throws UnsupportedEncodingException, FileNotFoundException, IOException {
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.yaml"), testConf.toYaml());
+        FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.yaml");
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test", testConf), fetched);
     }
