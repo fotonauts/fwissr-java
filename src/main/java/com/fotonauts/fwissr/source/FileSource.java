@@ -32,7 +32,13 @@ public class FileSource extends Source {
         return fromPath((String) settings.get("filepath"), options);
     }
 
-    private static FileSource fromPath(String filename, SmarterMap options) {
+    // package visibility for tests
+    static FileSource fromPath(String filename) {
+        return fromPath(filename, new SmarterMap());        
+    }
+    
+    // package visibility for tests
+    static FileSource fromPath(String filename, SmarterMap options) {
         if (StringUtils.isBlank(filename))
             throw new FwissrRuntimeException("Unexpected file source path: " + filename);
         return new FileSource(filename, options);
@@ -60,7 +66,6 @@ public class FileSource extends Source {
         }
 
         return result;
-
     }
 
     private void mergeConfFile(SmarterMap result, File f) {
@@ -79,5 +84,9 @@ public class FileSource extends Source {
     @Override
     public String toString() {
         return "Configuration file source: " + path;
+    }
+
+    public String getPath() {
+        return path;
     }
 }

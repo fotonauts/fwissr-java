@@ -39,6 +39,6 @@ public abstract class Source {
     public synchronized void reset() {
         conf = null;
     }
-    
+
     
 }

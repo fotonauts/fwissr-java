@@ -12,20 +12,18 @@ import org.junit.rules.TemporaryFolder;
 public class Fixtures {
 
     public static void setupGlobalConf(TemporaryFolder tmpConfDir) throws IOException {
-/*        
         // create additional file sources
         File mouarfLolJson = tmpConfDir.newFile("mouarf.lol.json");
-        createTmpConfFile(mouarfLolJson, S(/ *{
+        createTmpConfFile(mouarfLolJson, S(/*{
           "meu" : "ringue",
           "pa" : { "pri" : "ka"}
-        }* /));
+        }*/));
 
         File tropMdrJson = tmpConfDir.newFile("trop.mdr.json");
-        createTmpConfFile(tropMdrJson, S(/ *{
+        createTmpConfFile(tropMdrJson, S(/*{
           "gein" : "gembre",
           "pa" : { "ta" : "teu"}
-        }* /));
-*/
+        }*/));
 /*
         // create additional mongodb sources
         create_tmp_mongo_col("roque.fort", S(/ *{
@@ -36,10 +34,7 @@ public class Fixtures {
           { "pim" : { "pam" : [ "pom", "pum" ] } }
         * /));
 */
-
         /*
-            { "filepath" : "%s" },
-            { "filepath" : "%s", "top_level" : true }
             { "mongodb"  : "tmp_mongo_db_uri", "collection" : "roque.fort", "top_level" : true },
             { "mongodb"  : "tmp_mongo_db_uri", "collection" : "cam.en.bert" }
 
@@ -48,8 +43,10 @@ public class Fixtures {
         // create main conf file
         String fwissrConf = String.format(S(/*
         { "fwissr_sources" : [
+            { "filepath" : "%s" },
+            { "filepath" : "%s", "top_level" : true }
           ], "fwissr_refresh_period" : 5,  "foo" : "bar" }
-        }*/)/*, mouarfLolJson.toString(), tropMdrJson.toString() */);
+        }*/), mouarfLolJson.toString(), tropMdrJson.toString());
         
         File fwissrJson = tmpConfDir.newFile("fwissr.json");
         createTmpConfFile(fwissrJson, fwissrConf);

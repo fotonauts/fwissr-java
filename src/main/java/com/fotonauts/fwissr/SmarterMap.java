@@ -143,4 +143,13 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
             throw new FwissrRuntimeException("failed to dump content");
         }
     }
+
+    public String toJson() {
+        ObjectWriter w = jacksonObjectMapper.writer();
+        try {
+            return w.writeValueAsString(underlying);
+        } catch (IOException e) {
+            throw new FwissrRuntimeException("failed to dump content");
+        }
+    }
 }
