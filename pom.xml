@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.fotonauts</groupId>
 	<artifactId>fwissr</artifactId>
@@ -42,7 +43,7 @@
 	<scm>
 		<connection>scm:git:ssh://git@github.com/fotonauts/fwissr-java.git</connection>
 	</scm>
-    <repositories>
+	<repositories>
 		<repository>
 			<id>central</id>
 			<url>http://repo1.maven.org/maven2/</url>
@@ -105,18 +106,10 @@
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.8.0</version>
 		</dependency>
-<!--
 		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-			<version>1.9</version>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.2.1</version>
 		</dependency>
--->
 	</dependencies>
 </project>
