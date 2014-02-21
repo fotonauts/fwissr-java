@@ -1,0 +1,8 @@
+bin
+target
+.classpath
+/target
+.rsync-filter
+.settings
+.DS_store
+release.properties
