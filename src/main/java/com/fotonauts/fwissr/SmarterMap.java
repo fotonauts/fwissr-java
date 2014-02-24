@@ -22,7 +22,7 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
 
     private AtomicBoolean frozen = new AtomicBoolean();
     private Map<String,Serializable> underlying;
-    
+
     public SmarterMap(Map<String,Serializable> underlying) {
         this.underlying = underlying;
     }
@@ -97,7 +97,7 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         try {
             return new SmarterMap(jsonObjectMapper.readValue(jsonObjectMapper.writeValueAsBytes(underlying), Map.class));
         } catch (IOException e) {
-            throw new FwissrRuntimeException("failed to clone map: ", e); 
+            throw new FwissrRuntimeException("failed to clone map: ", e);
         }
     }
 
@@ -129,12 +129,12 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
     public boolean isFrozen() {
         return frozen.get();
     }
-    
+
     @Override
     public String toString() {
         return dump();
     }
-    
+
     public String dump() {
         ObjectWriter w = jsonObjectMapper.writer().withDefaultPrettyPrinter();
         try {

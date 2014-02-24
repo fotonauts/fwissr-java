@@ -39,7 +39,7 @@ public class TestFwissr {
         //assertEquals("ka", fwissr.get("/mouarf/lol/pa/pri"));
         // Fwissr['/pa'].should == { 'ta' => 'teu'}
         //assertEquals("teu", fwissr.get("/pa/ta"));
-        
+
     }
 
 }

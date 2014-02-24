@@ -13,7 +13,7 @@ import com.fotonauts.fwissr.source.Source;
 
 public class Fwissr {
 
-    private final static String MAIN_CONF_FILE = "fwissr.json"; 
+    private final static String MAIN_CONF_FILE = "fwissr.json";
     protected static ObjectMapper jsonObjectMapper = new ObjectMapper();
     protected static ObjectMapper yamlObjectMapper = new ObjectMapper(new YAMLFactory());
 
@@ -49,7 +49,7 @@ public class Fwissr {
     private File getMainConfFile() {
         return new File(mainConfPath.toString() + File.separator + MAIN_CONF_FILE);
     }
-    
+
     private synchronized SmarterMap getMainConf() {
         if (mainConf == null) {
             mainConf = new SmarterMap();

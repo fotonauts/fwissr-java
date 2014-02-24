@@ -11,7 +11,7 @@ public class Registry {
 
     private static int DEFAULT_REFRESH_PERIOD = 30;
     private long refreshPeriodMS;
-    
+
     private SmarterMap registry = new SmarterMap();
     private List<Source> sources = new LinkedList<>();
 
@@ -38,7 +38,7 @@ public class Registry {
         registry = new SmarterMap();
         for(Source source: sources)
             registry.mergeAll(source.getConf());
-        
+
     }
 
     private synchronized void reset() {
@@ -54,7 +54,7 @@ public class Registry {
     public int getRefreshPeriod() {
         return (int) (refreshPeriodMS / 1000);
     }
-    
+
     public synchronized SmarterMap getRegistry() {
         registry.freeze();
         return registry;
@@ -67,7 +67,7 @@ public class Registry {
         Serializable current = getRegistry();
         for(String k: keyAsArray) {
             current = ((SmarterMap) current).get(k);
-            if(current == null) 
+            if(current == null)
                 return null;
         }
         return current;

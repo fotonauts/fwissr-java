@@ -8,7 +8,7 @@ public abstract class Source {
 
     protected SmarterMap options;
     protected SmarterMap conf;
-    
+
     public Source(SmarterMap options) {
         this.options = options;
     }
@@ -18,7 +18,7 @@ public abstract class Source {
     }
 
     abstract public SmarterMap fetchConf();
-    
+
     public static Source fromSettings(SmarterMap settings) {
         if(settings.containsKey("filepath")) {
             return FileSource.fromSettings(settings);
@@ -41,5 +41,5 @@ public abstract class Source {
         conf = null;
     }
 
-    
+
 }

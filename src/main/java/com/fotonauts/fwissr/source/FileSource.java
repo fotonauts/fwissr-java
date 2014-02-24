@@ -34,9 +34,9 @@ public class FileSource extends Source {
 
     // package visibility for tests
     static FileSource fromPath(String filename) {
-        return fromPath(filename, new SmarterMap());        
+        return fromPath(filename, new SmarterMap());
     }
-    
+
     // package visibility for tests
     static FileSource fromPath(String filename, SmarterMap options) {
         if (StringUtils.isBlank(filename))

@@ -39,7 +39,7 @@ public class Fixtures {
             { "mongodb"  : "tmp_mongo_db_uri", "collection" : "cam.en.bert" }
 
          */
-        
+
         // create main conf file
         String fwissrConf = String.format(S(/*
         { "fwissr_sources" : [
@@ -47,11 +47,11 @@ public class Fixtures {
             { "filepath" : "%s", "top_level" : true }
           ], "fwissr_refresh_period" : 5,  "foo" : "bar" }
         }*/), mouarfLolJson.toString(), tropMdrJson.toString());
-        
+
         File fwissrJson = tmpConfDir.newFile("fwissr.json");
         createTmpConfFile(fwissrJson, fwissrConf);
     }
-    
+
     public static void createTmpConfFile(File file, String conf) throws IOException {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(conf.getBytes("UTF-8"));
