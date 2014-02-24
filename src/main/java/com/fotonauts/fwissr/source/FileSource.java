@@ -25,7 +25,7 @@ public class FileSource extends Source {
         path = filename;
     }
 
-    public static FileSource fromSettings(SmarterMap settings) {
+    public static Source fromSettings(SmarterMap settings) {
         SmarterMap options = settings.clone();
         options.remove("filepath");
         options.freeze();
@@ -61,24 +61,14 @@ public class FileSource extends Source {
         }
 
         for (File f : files) {
-            if (f.isFile())
-                mergeConfFile(result, f);
+            if (f.isFile()) {
+                String confFileName = f.getName().replaceAll("\\.[^.]*$", "");
+                SmarterMap c = Fwissr.parseConfFile(f);
+                mergeConf(result, c, confFileName.split("\\."), TOP_LEVEL_CONF_FILES.contains(confFileName));
+            }
         }
 
         return result;
-    }
-
-    private void mergeConfFile(SmarterMap result, File f) {
-        SmarterMap conf = Fwissr.parseConfFile(f);
-        String confFileName = f.getName().replaceAll("\\.[^.]*$", "");
-        SmarterMap resultPart = result;
-        if (!TOP_LEVEL_CONF_FILES.contains(confFileName) && options.get("top_level") != Boolean.TRUE) {
-            for (String keyPart : confFileName.split("\\.")) {
-                resultPart.put(keyPart, new SmarterMap());
-                resultPart = (SmarterMap) resultPart.get(keyPart);
-            }
-        }
-        resultPart.mergeAll(conf);
     }
 
     @Override

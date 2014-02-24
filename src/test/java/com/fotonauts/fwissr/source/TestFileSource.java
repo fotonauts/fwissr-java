@@ -36,7 +36,7 @@ public class TestFileSource {
     @Test
     public void testFetchJson() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.json");
+        Source s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.json");
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test", testConf1), fetched);
     }
@@ -44,7 +44,7 @@ public class TestFileSource {
     @Test
     public void testFetchYaml() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.yaml"), testConf1.toYaml());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.yaml");
+        Source s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.yaml");
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test", testConf1), fetched);
     }
@@ -55,7 +55,7 @@ public class TestFileSource {
     public void testFetchFromDir() throws FileNotFoundException, IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test1.json"), testConf1.toJson());
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test2.yaml"), testConf2.toYaml());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString());
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString());
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test1", testConf1, "test2", testConf2), fetched);
     }
@@ -63,7 +63,7 @@ public class TestFileSource {
     @Test
     public void testMapFileNameToKeyParts() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.with.parts.json"), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString());
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString());
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test", SmarterMap.from("with", SmarterMap.from("parts", testConf1))), fetched);
     }
@@ -72,7 +72,7 @@ public class TestFileSource {
     public void testDoesNotMapFileToKeyPartsForDefaultTopLevelFiles() throws IOException {
         String filename = FileSource.TOP_LEVEL_CONF_FILES.iterator().next() + ".json";
         Fixtures.createTmpConfFile(tmpConfDir.newFile(filename), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/" + filename);
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/" + filename);
         SmarterMap fetched = s.fetchConf();
         assertEquals(testConf1, fetched);
     }
@@ -80,7 +80,7 @@ public class TestFileSource {
     @Test
     public void testDoesNotMapFileToKeyPartsForCustomTopLevelFiles() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.from("top_level", true));
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.from("top_level", true));
         SmarterMap fetched = s.fetchConf();
         assertEquals(testConf1, fetched);
     }
@@ -88,7 +88,7 @@ public class TestFileSource {
     @Test
     public void testDoesRefreshConfIfAllowedTo() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.from("refresh", true));
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.from("refresh", true));
         SmarterMap fetched1 = s.fetchConf();
         assertEquals(SmarterMap.from("test", testConf1), fetched1);
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
@@ -99,7 +99,7 @@ public class TestFileSource {
     @Test
     public void testDoesNotRefreshConfIfNotAllowed() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json");
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json");
         SmarterMap fetched1 = s.getConf();
         assertEquals(SmarterMap.from("test", testConf1), fetched1);
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
@@ -110,7 +110,7 @@ public class TestFileSource {
     @Test
     public void testResetItself() throws IOException {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json");
+        Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json");
         SmarterMap fetched1 = s.getConf();
         assertEquals(SmarterMap.from("test", testConf1), fetched1);
 

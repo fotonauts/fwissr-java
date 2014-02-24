@@ -20,6 +20,8 @@ public abstract class Source {
     public static Source fromSettings(SmarterMap settings) {
         if(settings.containsKey("filepath")) {
             return FileSource.fromSettings(settings);
+        } else if(settings.containsKey("mongodb")) {
+            return MongodbSource.fromSettings(settings);
         }
         throw new RuntimeException("Unexpected source settings kind: " + settings.dump());
     }
@@ -37,6 +39,17 @@ public abstract class Source {
 
     public synchronized void reset() {
         conf = null;
+    }
+
+    protected void mergeConf(SmarterMap result, SmarterMap conf, String[] path, boolean topLevelByName) {
+        SmarterMap resultPart = result;
+        if (!topLevelByName && options.get("top_level") != Boolean.TRUE) {
+            for (String keyPart: path) {
+                resultPart.put(keyPart, new SmarterMap());
+                resultPart = (SmarterMap) resultPart.get(keyPart);
+            }
+        }
+        resultPart.mergeAll(conf);
     }
 
 
