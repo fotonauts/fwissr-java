@@ -14,7 +14,7 @@ import com.fotonauts.fwissr.SmarterMap;
 
 public class FileSource extends Source {
 
-    private static Set<String> TOP_LEVEL_CONF_FILES = Collections.unmodifiableSet(Collections.singleton("fwissr"));
+    public final static Set<String> TOP_LEVEL_CONF_FILES = Collections.unmodifiableSet(Collections.singleton("fwissr"));
 
     private String path;
 

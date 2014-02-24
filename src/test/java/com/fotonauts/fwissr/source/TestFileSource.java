@@ -70,4 +70,27 @@ public class TestFileSource {
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test", SmarterMap.from("with", SmarterMap.from("parts", testConf1))), fetched);
     }
+
+    @Test
+    public void testDoesNotMapFileToKeyPartsForDefaultTopLevelFiles() throws UnsupportedEncodingException, FileNotFoundException,
+            IOException {
+        String filename = FileSource.TOP_LEVEL_CONF_FILES.iterator().next() + ".json";
+        Fixtures.createTmpConfFile(tmpConfDir.newFile(filename), testConf1.toJson());
+        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/" + filename);
+        SmarterMap fetched = s.fetchConf();
+        assertEquals(testConf1, fetched);
+    }
+
+    @Test
+    public void testDoesNotMapFileToKeyPartsForCustomTopLevelFiles() throws UnsupportedEncodingException, FileNotFoundException,
+            IOException {
+        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
+        FileSource s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.from("top_level", true));
+        SmarterMap fetched = s.fetchConf();
+        assertEquals(testConf1, fetched);
+    }
+
+    public void testDoesRefreshConfIfAllowedTo() {
+        
+    }
 }
