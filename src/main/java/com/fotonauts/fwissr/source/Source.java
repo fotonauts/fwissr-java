@@ -2,8 +2,6 @@ package com.fotonauts.fwissr.source;
 
 import com.fotonauts.fwissr.SmarterMap;
 
-
-
 public abstract class Source {
 
     protected SmarterMap options;
