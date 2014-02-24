@@ -27,8 +27,9 @@ public abstract class Source {
     }
 
     public synchronized SmarterMap getConf() {
-        if(conf == null || canRefresh())
+        if(conf == null || canRefresh()) {
             conf = fetchConf();
+        }
         return conf;
     }
 

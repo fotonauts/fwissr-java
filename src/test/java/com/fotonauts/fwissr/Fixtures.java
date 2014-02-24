@@ -52,7 +52,7 @@ public class Fixtures {
         createTmpConfFile(fwissrJson, fwissrConf);
     }
     
-    public static void createTmpConfFile(File file, String conf) throws UnsupportedEncodingException, IOException {
+    public static void createTmpConfFile(File file, String conf) throws IOException {
         FileOutputStream fos = new FileOutputStream(file);
         fos.write(conf.getBytes("UTF-8"));
         fos.close();
