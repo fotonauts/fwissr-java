@@ -80,4 +80,7 @@ public class Fixtures {
             }
         }
     }
+
+    public static SmarterMap testConf1 = SmarterMap.from("foo", "bar", "cam", SmarterMap.from("en", "bert"), "conf", 1);
+    public static SmarterMap testConf2 = SmarterMap.from("jean", "bon", "terieur", SmarterMap.from("alain", "alex"), "conf", 2);
 }

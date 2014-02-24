@@ -13,6 +13,8 @@ import com.fotonauts.fwissr.Fixtures;
 import com.fotonauts.fwissr.FwissrRuntimeException;
 import com.fotonauts.fwissr.SmarterMap;
 
+import static com.fotonauts.fwissr.Fixtures.*;
+
 public class TestFileSource {
 
     @Rule
@@ -20,7 +22,7 @@ public class TestFileSource {
 
     @Test
     public void testInstantiationFromURI() throws IOException {
-        Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), SmarterMap.from().toString());
+        createTmpConfFile(tmpConfDir.newFile("test.json"), SmarterMap.from().toString());
         FileSource s = FileSource.fromPath(tmpConfDir.getRoot() + "/test.json");
         assertEquals(tmpConfDir.getRoot() + "/test.json", s.getPath());
     }
@@ -30,8 +32,6 @@ public class TestFileSource {
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), SmarterMap.from().toString());
         FileSource.fromPath(tmpConfDir.getRoot() + "/pouet.json");
     }
-
-    private SmarterMap testConf1 = SmarterMap.from("foo", "bar", "cam", SmarterMap.from("en", "bert"), "conf", 1);
 
     @Test
     public void testFetchJson() throws IOException {
@@ -48,8 +48,6 @@ public class TestFileSource {
         SmarterMap fetched = s.fetchConf();
         assertEquals(SmarterMap.from("test", testConf1), fetched);
     }
-
-    private SmarterMap testConf2 = SmarterMap.from("jean", "bon", "terieur", SmarterMap.from("alain", "alex"), "conf", 2);
 
     @Test
     public void testFetchFromDir() throws FileNotFoundException, IOException {

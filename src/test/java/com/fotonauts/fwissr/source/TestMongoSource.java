@@ -1,5 +1,8 @@
 package com.fotonauts.fwissr.source;
 
+import static com.fotonauts.fwissr.Fixtures.createTmpConfCollection;
+import static com.fotonauts.fwissr.Fixtures.dumpMongo;
+import static com.fotonauts.fwissr.Fixtures.testConf1;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.AfterClass;
@@ -7,7 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.fotonauts.fwissr.Fixtures;
 import com.fotonauts.fwissr.SmarterMap;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -31,10 +33,8 @@ public class TestMongoSource {
     public static void setUp() throws Exception {
 
         MongodStarter runtime = MongodStarter.getDefaultInstance();
-        _mongodExe = runtime.prepare(new MongodConfigBuilder()
-            .version(Version.Main.PRODUCTION)
-            .net(new Net(12345, Network.localhostIsIPv6()))
-            .build());
+        _mongodExe = runtime.prepare(new MongodConfigBuilder().version(Version.Main.PRODUCTION)
+                .net(new Net(12345, Network.localhostIsIPv6())).build());
         _mongod = _mongodExe.start();
 
         mongo = new MongoClient("localhost", 12345);
@@ -45,19 +45,20 @@ public class TestMongoSource {
         _mongod.stop();
         _mongodExe.stop();
     }
-    
+
     @Before
     public void clearDatabase() throws Exception {
         mongo.dropDatabase("fwissr_spec");
     }
-    
-    
+
+    private String uriPrefix() {
+        return String.format("mongodb://%s:%d", mongo.getAddress().getHost(), mongo.getAddress().getPort());
+    }
+
     @Test
     public void testInstantiateFromURI() {
-        Fixtures.createTmpConfCollection(mongo, "test", SmarterMap.from("rootkey", SmarterMap.from("foo", "bar")));
-        Fixtures.dumpMongo(mongo);
-        String uri = String.format("mongodb://%s:%d", mongo.getAddress().getHost(), mongo.getAddress().getPort());
-        Source source = Source.fromSettings(SmarterMap.from("mongodb", uri + "/fwissr_spec", "collection", "test"));
+        createTmpConfCollection(mongo, "test", SmarterMap.from("rootkey", SmarterMap.from("foo", "bar")));
+        Source source = Source.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
         assertEquals(MongodbSource.class, source.getClass());
         DBCollection collection = ((MongodbSource) source).collection;
         assertEquals("test", collection.getName());
@@ -66,4 +67,11 @@ public class TestMongoSource {
         assertEquals(1, collection.find(new BasicDBObject("_id", "rootkey")).count());
     }
 
+    @Test
+    public void testFetchConf() {
+        createTmpConfCollection(mongo, "test", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        SmarterMap confFetched = source.fetchConf();
+        assertEquals(SmarterMap.from("test", testConf1), confFetched);
+    }
 }

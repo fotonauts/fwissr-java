@@ -1,5 +1,6 @@
 package com.fotonauts.fwissr.source;
 
+import java.io.Serializable;
 import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -50,7 +51,7 @@ public class MongodbSource extends Source {
         this.collection = collection;
     }
 
-    public static Source fromSettings(SmarterMap settings) {
+    public static MongodbSource fromSettings(SmarterMap settings) {
         SmarterMap options = settings.clone();
         options.remove("mongodb");
         options.remove("collection");
@@ -74,18 +75,19 @@ public class MongodbSource extends Source {
         SmarterMap conf = new SmarterMap();
         for (DBObject doc : collection.find()) {
             Object key = doc.get("_id");
-            SmarterMap value;
+            Serializable value;
             if (doc.containsField("value")) {
-                value = new SmarterMap(((DBObject) doc.get("value")).toMap());
+                value = (Serializable) doc.get("value");
             } else {
-                value = new SmarterMap(doc.toMap()).clone();
-                value.remove("_id");
-                value.freeze();
+                SmarterMap map = new SmarterMap(doc.toMap()).clone();
+                map.remove("_id");
+                map.freeze();
+                value = map;
             }
             conf.put(key.toString(), value);
         }
 
-        String[] path = new String[] { collection.getDB().getName(), collection.getName() };
+        String[] path = new String[] { collection.getName() };
         mergeConf(result, conf, path, TOP_LEVEL_COLLECTIONS.contains(collection.getName()));
 
         return result;
