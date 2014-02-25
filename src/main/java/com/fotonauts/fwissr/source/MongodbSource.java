@@ -87,7 +87,7 @@ public class MongodbSource extends Source {
             conf.put(key.toString(), value);
         }
 
-        String[] path = new String[] { collection.getName() };
+        String[] path = collection.getName().split("\\.");
         mergeConf(result, conf, path, TOP_LEVEL_COLLECTIONS.contains(collection.getName()));
 
         return result;

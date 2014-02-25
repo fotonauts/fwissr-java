@@ -3,6 +3,8 @@ package com.fotonauts.fwissr.source;
 import static com.fotonauts.fwissr.Fixtures.createTmpConfCollection;
 import static com.fotonauts.fwissr.Fixtures.dumpMongo;
 import static com.fotonauts.fwissr.Fixtures.testConf1;
+import static com.fotonauts.fwissr.Fixtures.testConf2;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.AfterClass;
@@ -73,5 +75,62 @@ public class TestMongoSource {
         MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
         SmarterMap confFetched = source.fetchConf();
         assertEquals(SmarterMap.from("test", testConf1), confFetched);
+    }
+
+    @Test
+    public void testMapCollectionNameToKeyParts() throws Exception {
+        createTmpConfCollection(mongo, "cam.en.bert", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "cam.en.bert"));
+        SmarterMap confFetched = source.fetchConf();
+        assertEquals(SmarterMap.from("cam", SmarterMap.from("en", SmarterMap.from("bert", testConf1))), confFetched);
+    }
+    
+    @Test
+    public void testDoesNotMapNameToKeyPartsForTopLevel() throws Exception {
+        createTmpConfCollection(mongo, "fwissr", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "fwissr"));
+        SmarterMap confFetched = source.fetchConf();
+        assertEquals(testConf1, confFetched);        
+    }
+
+    @Test
+    public void testDoesNotMapNameToKeyPartsForCustomTopLevel() throws Exception {
+        createTmpConfCollection(mongo, "cam.en.bert", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "cam.en.bert", "top_level", true));
+        SmarterMap confFetched = source.fetchConf();
+        assertEquals(testConf1, confFetched);        
+    }
+    
+    @Test
+    public void testRefreshConfIfAllowed() throws Exception {
+        createTmpConfCollection(mongo, "test", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test", "refresh", true));
+        SmarterMap confFetched1 = source.getConf();
+        assertEquals(SmarterMap.from("test", testConf1), confFetched1);
+        createTmpConfCollection(mongo, "test", testConf2);
+        SmarterMap confFetched2 = source.getConf();
+        assertEquals(SmarterMap.from("test", testConf2), confFetched2);
+    }
+    
+    @Test
+    public void testDoesNotRefreshConfIfNotAllowed() throws Exception {
+        createTmpConfCollection(mongo, "test", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        SmarterMap confFetched1 = source.getConf();
+        assertEquals(SmarterMap.from("test", testConf1), confFetched1);
+        createTmpConfCollection(mongo, "test", testConf2);
+        SmarterMap confFetched2 = source.getConf();
+        assertEquals(SmarterMap.from("test", testConf1), confFetched2);
+    }
+    
+    @Test
+    public void testRefreshItself() throws Exception {
+        createTmpConfCollection(mongo, "test", testConf1);
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        assertEquals(SmarterMap.from("test", testConf1), source.getConf());
+        createTmpConfCollection(mongo, "test", testConf2);
+        assertEquals(SmarterMap.from("test", testConf1), source.getConf());
+        source.reset();
+        assertEquals(SmarterMap.from("test", testConf2), source.getConf());        
     }
 }

@@ -64,6 +64,7 @@ public class Fixtures {
     }
 
     public static void createTmpConfCollection(Mongo mongo, String collectionName, SmarterMap conf) {
+        mongo.getDB("fwissr_spec").getCollection(collectionName).drop();
         for (Map.Entry<String, Serializable> entry : conf.entrySet())
             mongo.getDB("fwissr_spec").getCollection(collectionName)
                     .insert(new BasicDBObject(SmarterMap.from("_id", entry.getKey(), "value", entry.getValue())));
