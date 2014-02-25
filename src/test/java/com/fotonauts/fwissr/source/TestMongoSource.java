@@ -1,10 +1,8 @@
 package com.fotonauts.fwissr.source;
 
 import static com.fotonauts.fwissr.Fixtures.createTmpConfCollection;
-import static com.fotonauts.fwissr.Fixtures.dumpMongo;
 import static com.fotonauts.fwissr.Fixtures.testConf1;
 import static com.fotonauts.fwissr.Fixtures.testConf2;
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.AfterClass;
