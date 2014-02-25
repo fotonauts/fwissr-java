@@ -23,7 +23,7 @@ public abstract class Source {
         } else if(settings.containsKey("mongodb")) {
             return MongodbSource.fromSettings(settings);
         }
-        throw new RuntimeException("Unexpected source settings kind: " + settings.dump());
+        throw new RuntimeException("Unexpected source settings kind: " + settings.toDebugString());
     }
 
     public synchronized SmarterMap getConf() {

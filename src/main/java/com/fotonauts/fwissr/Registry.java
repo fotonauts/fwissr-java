@@ -1,15 +1,19 @@
 package com.fotonauts.fwissr;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.fotonauts.fwissr.source.Source;
 
 public class Registry {
 
-    private static int DEFAULT_REFRESH_PERIOD = 30;
+    public static int DEFAULT_REFRESH_PERIOD = 30;
     private long refreshPeriodMS;
 
     private SmarterMap registry = new SmarterMap();
@@ -73,7 +77,24 @@ public class Registry {
         return current;
     }
 
-    public String dump() {
-        return getRegistry().dump();
+    public String toDebugString() {
+        return getRegistry().toDebugString();
+    }
+
+    public List<String> getKeys() {
+        List<String> result = new LinkedList<>();
+        getKeys(result, new ArrayList<String>(), getRegistry());
+        return result;
+        
+    }
+    
+    private void getKeys(List<String> result, List<String> currentPath, SmarterMap node) {
+        for(Entry<String, Serializable> e: node.entrySet()) {
+            currentPath.add(e.getKey());
+            result.add("/" + StringUtils.join(currentPath, "/"));
+            if(e.getValue() instanceof SmarterMap)
+                getKeys(result, currentPath, (SmarterMap) e.getValue());
+            currentPath.remove(currentPath.size() - 1);
+        }
     }
 }

@@ -132,10 +132,10 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
 
     @Override
     public String toString() {
-        return dump();
+        return toDebugString();
     }
 
-    public String dump() {
+    public String toDebugString() {
         ObjectWriter w = jsonObjectMapper.writer().withDefaultPrettyPrinter();
         try {
             return w.writeValueAsString(underlying);

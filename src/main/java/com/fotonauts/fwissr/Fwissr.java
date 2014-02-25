@@ -78,7 +78,7 @@ public class Fwissr {
     }
 
     public String dump() {
-        return getGlobalRegistry().dump();
+        return getGlobalRegistry().toDebugString();
     }
 
 }
