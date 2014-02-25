@@ -1,6 +1,8 @@
 package com.fotonauts.fwissr;
 
 import static com.fotonauts.fwissr.TextUtils.S;
+import static com.fotonauts.fwissr.SmarterMap.m;
+import static com.fotonauts.fwissr.SmarterList.l;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -67,7 +69,7 @@ public class Fixtures {
         mongo.getDB("fwissr_spec").getCollection(collectionName).drop();
         for (Map.Entry<String, Serializable> entry : conf.entrySet())
             mongo.getDB("fwissr_spec").getCollection(collectionName)
-                    .insert(new BasicDBObject(SmarterMap.from("_id", entry.getKey(), "value", entry.getValue())));
+                    .insert(new BasicDBObject(SmarterMap.m("_id", entry.getKey(), "value", entry.getValue())));
     }
     
     public static void dumpMongo(Mongo mongo) {
@@ -82,7 +84,7 @@ public class Fixtures {
         }
     }
 
-    public static SmarterMap testConf1 = SmarterMap.from("foo", "bar", "cam", SmarterMap.from("en", "bert"), "conf", 1);
-    public static SmarterMap testConf2 = SmarterMap.from("jean", "bon", "terieur", SmarterMap.from("alain", "alex"), "conf", 2);
-    public static SmarterMap testConf3 = SmarterMap.from("jean", "bon", "cam", SmarterMap.from("et", "rat"), "conf", 3, "foo", "baz");
+    public static SmarterMap testConf1 = m("foo", "bar", "cam", m("en", "bert"), "conf", 1);
+    public static SmarterMap testConf2 = m("jean", "bon", "terieur", m("alain", "alex"), "conf", 2);
+    public static SmarterMap testConf3 = m("jean", "bon", "cam", m("et", "rat"), "conf", 3, "foo", "baz");
 }

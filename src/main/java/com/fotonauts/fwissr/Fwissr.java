@@ -65,9 +65,9 @@ public class Fwissr {
     // FIXME ~user conf
     private synchronized Registry getGlobalRegistry() {
         if (globalRegistry == null) {
-            globalRegistry = new Registry(SmarterMap.from("refresh_period", getMainConf().get("fwissr_refresh_period")));
+            globalRegistry = new Registry(SmarterMap.m("refresh_period", getMainConf().get("fwissr_refresh_period")));
             if(mainConfPath.exists())
-                globalRegistry.addSource(Source.fromSettings(SmarterMap.from("filepath", mainConfPath.toString())));
+                globalRegistry.addSource(Source.fromSettings(SmarterMap.m("filepath", mainConfPath.toString())));
             if(mainConf.containsKey("fwissr_sources")) {
                 for(Serializable s: (List<Serializable>) mainConf.get("fwissr_sources")) {
                     globalRegistry.addSource(Source.fromSettings(new SmarterMap((Map) s)));

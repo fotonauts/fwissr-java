@@ -3,6 +3,7 @@ package com.fotonauts.fwissr;
 import static com.fotonauts.fwissr.Fixtures.createTmpConfFile;
 import static com.fotonauts.fwissr.Fixtures.*;
 import static org.junit.Assert.*;
+import static com.fotonauts.fwissr.SmarterMap.m;
 
 import java.util.List;
 
@@ -21,13 +22,13 @@ public class TestRegistry {
     @Test
     public void testInstantiateWithASource() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        Registry reg = new Registry(SmarterMap.from("refresh_period", 20));
+        Registry reg = new Registry(m("refresh_period", 20));
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json"));
         assertEquals(20, reg.getRefreshPeriod());
         assertEquals(20000, reg.getRefreshPeriodMS());
         assertEquals("bar", reg.get("/test/foo"));
         assertEquals("bert", reg.get("/test/cam/en"));
-        assertEquals(SmarterMap.from("en", "bert"), reg.get("/test/cam"));
+        assertEquals(m("en", "bert"), reg.get("/test/cam"));
 
         assertNull(reg.get("/meuh"));
         assertNull(reg.get("/test/meuh"));
@@ -36,7 +37,7 @@ public class TestRegistry {
 
     @Test
     public void testDefaultRefreshPeriod() throws Exception {
-        Registry reg = new Registry(SmarterMap.from());
+        Registry reg = new Registry(m());
         assertEquals(Registry.DEFAULT_REFRESH_PERIOD, reg.getRefreshPeriod());
     }
 
@@ -44,26 +45,26 @@ public class TestRegistry {
     public void testInstantiateWithSeveralSources() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
         createTmpConfFile(tmpConfDir.newFile("test3.json"), testConf3.toJson());
-        Registry reg = new Registry(SmarterMap.from("refresh_period", 20));
-        reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.from("top_level", true)));
+        Registry reg = new Registry(m("refresh_period", 20));
+        reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", m("top_level", true)));
 
         assertEquals("bar", reg.get("/foo"));
         assertEquals("bert", reg.get("/cam/en"));
-        assertEquals(SmarterMap.from("en", "bert"), reg.get("/cam"));
+        assertEquals(m("en", "bert"), reg.get("/cam"));
 
-        reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test3.json", SmarterMap.from("top_level", true)));
+        reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test3.json", m("top_level", true)));
 
         assertEquals("baz", reg.get("/foo"));
         assertEquals("bert", reg.get("/cam/en"));
         assertEquals("rat", reg.get("/cam/et"));
-        assertEquals(SmarterMap.from("en", "bert", "et", "rat"), reg.get("/cam"));
+        assertEquals(m("en", "bert", "et", "rat"), reg.get("/cam"));
         assertEquals("bon", reg.get("/jean"));
     }
-    
+
     @Test
     public void testListKeys() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
-        Registry reg = new Registry(SmarterMap.from("refresh_period", 20));
+        Registry reg = new Registry(m("refresh_period", 20));
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json"));
         List<String> keys = reg.getKeys();
         assertEquals("/test:/test/foo:/test/cam:/test/conf", StringUtils.join(reg.getKeys(), ":"));

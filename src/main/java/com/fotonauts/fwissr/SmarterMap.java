@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,6 +53,8 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         Serializable r = underlying.get(key);
         if(r instanceof Map<?,?> && !(r instanceof SmarterMap))
             return new SmarterMap((Map<String,Serializable>) r);
+        else if(r instanceof List<?> && !(r instanceof SmarterList))
+            return new SmarterList((List<Serializable>) r);
         else
             return r;
     }
@@ -117,7 +120,7 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         }
     }
 
-    public static SmarterMap from(Serializable... args) {
+    public static SmarterMap m(Serializable... args) {
         if(args.length % 2 == 1)
             throw new FwissrRuntimeException("attempts at building a map with an odd number of arguments");
         SmarterMap m = new SmarterMap();

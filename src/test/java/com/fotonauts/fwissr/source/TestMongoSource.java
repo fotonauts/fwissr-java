@@ -57,8 +57,8 @@ public class TestMongoSource {
 
     @Test
     public void testInstantiateFromURI() {
-        createTmpConfCollection(mongo, "test", SmarterMap.from("rootkey", SmarterMap.from("foo", "bar")));
-        Source source = Source.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        createTmpConfCollection(mongo, "test", SmarterMap.m("rootkey", SmarterMap.m("foo", "bar")));
+        Source source = Source.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
         assertEquals(MongodbSource.class, source.getClass());
         DBCollection collection = ((MongodbSource) source).collection;
         assertEquals("test", collection.getName());
@@ -70,23 +70,23 @@ public class TestMongoSource {
     @Test
     public void testFetchConf() {
         createTmpConfCollection(mongo, "test", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
         SmarterMap confFetched = source.fetchConf();
-        assertEquals(SmarterMap.from("test", testConf1), confFetched);
+        assertEquals(SmarterMap.m("test", testConf1), confFetched);
     }
 
     @Test
     public void testMapCollectionNameToKeyParts() throws Exception {
         createTmpConfCollection(mongo, "cam.en.bert", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "cam.en.bert"));
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "cam.en.bert"));
         SmarterMap confFetched = source.fetchConf();
-        assertEquals(SmarterMap.from("cam", SmarterMap.from("en", SmarterMap.from("bert", testConf1))), confFetched);
+        assertEquals(SmarterMap.m("cam", SmarterMap.m("en", SmarterMap.m("bert", testConf1))), confFetched);
     }
     
     @Test
     public void testDoesNotMapNameToKeyPartsForTopLevel() throws Exception {
         createTmpConfCollection(mongo, "fwissr", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "fwissr"));
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "fwissr"));
         SmarterMap confFetched = source.fetchConf();
         assertEquals(testConf1, confFetched);        
     }
@@ -94,7 +94,7 @@ public class TestMongoSource {
     @Test
     public void testDoesNotMapNameToKeyPartsForCustomTopLevel() throws Exception {
         createTmpConfCollection(mongo, "cam.en.bert", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "cam.en.bert", "top_level", true));
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "cam.en.bert", "top_level", true));
         SmarterMap confFetched = source.fetchConf();
         assertEquals(testConf1, confFetched);        
     }
@@ -102,33 +102,33 @@ public class TestMongoSource {
     @Test
     public void testRefreshConfIfAllowed() throws Exception {
         createTmpConfCollection(mongo, "test", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test", "refresh", true));
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test", "refresh", true));
         SmarterMap confFetched1 = source.getConf();
-        assertEquals(SmarterMap.from("test", testConf1), confFetched1);
+        assertEquals(SmarterMap.m("test", testConf1), confFetched1);
         createTmpConfCollection(mongo, "test", testConf2);
         SmarterMap confFetched2 = source.getConf();
-        assertEquals(SmarterMap.from("test", testConf2), confFetched2);
+        assertEquals(SmarterMap.m("test", testConf2), confFetched2);
     }
     
     @Test
     public void testDoesNotRefreshConfIfNotAllowed() throws Exception {
         createTmpConfCollection(mongo, "test", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
         SmarterMap confFetched1 = source.getConf();
-        assertEquals(SmarterMap.from("test", testConf1), confFetched1);
+        assertEquals(SmarterMap.m("test", testConf1), confFetched1);
         createTmpConfCollection(mongo, "test", testConf2);
         SmarterMap confFetched2 = source.getConf();
-        assertEquals(SmarterMap.from("test", testConf1), confFetched2);
+        assertEquals(SmarterMap.m("test", testConf1), confFetched2);
     }
     
     @Test
     public void testRefreshItself() throws Exception {
         createTmpConfCollection(mongo, "test", testConf1);
-        MongodbSource source = MongodbSource.fromSettings(SmarterMap.from("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
-        assertEquals(SmarterMap.from("test", testConf1), source.getConf());
+        MongodbSource source = MongodbSource.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        assertEquals(SmarterMap.m("test", testConf1), source.getConf());
         createTmpConfCollection(mongo, "test", testConf2);
-        assertEquals(SmarterMap.from("test", testConf1), source.getConf());
+        assertEquals(SmarterMap.m("test", testConf1), source.getConf());
         source.reset();
-        assertEquals(SmarterMap.from("test", testConf2), source.getConf());        
+        assertEquals(SmarterMap.m("test", testConf2), source.getConf());        
     }
 }
