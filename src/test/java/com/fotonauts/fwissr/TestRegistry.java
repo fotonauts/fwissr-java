@@ -1,13 +1,14 @@
 package com.fotonauts.fwissr;
 
 import static com.fotonauts.fwissr.Fixtures.createTmpConfFile;
-import static com.fotonauts.fwissr.Fixtures.*;
-import static org.junit.Assert.*;
+import static com.fotonauts.fwissr.Fixtures.testConf1;
+import static com.fotonauts.fwissr.Fixtures.testConf3;
+import static com.fotonauts.fwissr.SmarterList.l;
 import static com.fotonauts.fwissr.SmarterMap.m;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
-import java.util.List;
-
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -63,10 +64,11 @@ public class TestRegistry {
 
     @Test
     public void testListKeys() throws Exception {
-        createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
+        createTmpConfFile(tmpConfDir.newFile("test.json"),
+                m("foo", "bar", "jean", l("bon", "rage"), "cam", m("en", m("bert", "coulant"))).toJson()
+                );
         Registry reg = new Registry(m("refresh_period", 20));
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json"));
-        List<String> keys = reg.getKeys();
-        assertEquals("/test:/test/foo:/test/cam:/test/conf", StringUtils.join(reg.getKeys(), ":"));
+        assertArrayEquals(l("/test","/test/jean","/test/cam","/test/cam/en","/test/cam/en/bert","/test/foo").toArray(), reg.getKeys().toArray());
     }
 }

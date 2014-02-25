@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,7 +49,7 @@ public class SmarterList implements List<Serializable>, Serializable {
     }
 
     public boolean add(Serializable e) {
-        return underlying.add(e);
+        return underlying.add(SmarterMap.smartify(e));
     }
 
     public boolean remove(Object o) {
@@ -62,11 +61,11 @@ public class SmarterList implements List<Serializable>, Serializable {
     }
 
     public boolean addAll(Collection<? extends Serializable> c) {
-        return underlying.addAll(c);
+        return underlying.addAll(new SmarterList(c));
     }
 
     public boolean addAll(int index, Collection<? extends Serializable> c) {
-        return underlying.addAll(index, c);
+        return underlying.addAll(index, new SmarterList(c));
     }
 
     public boolean removeAll(Collection<?> c) {
@@ -121,23 +120,18 @@ public class SmarterList implements List<Serializable>, Serializable {
         return underlying.subList(fromIndex, toIndex);
     }
 
-    public SmarterList(List<Serializable> underlying) {
-        this.underlying = underlying;
+    public SmarterList(Collection<? extends Serializable> c) {
+        this.underlying = new ArrayList<>();
+        for(Serializable s: c)
+            this.underlying.add(SmarterMap.smartify(s));
     }
 
     public SmarterList() {
         this.underlying = new ArrayList<>();
     }
 
-    @SuppressWarnings("unchecked")
     public Serializable get(int key) {
-        Serializable r = underlying.get(key);
-        if(r instanceof Map<?,?> && !(r instanceof SmarterMap))
-            return new SmarterMap((Map<String,Serializable>) r);
-        else if(r instanceof List<?> && !(r instanceof SmarterList))
-            return new SmarterList((List<Serializable>) r);
-        else
-            return r;
+        return underlying.get(key);
     }
 
     @SuppressWarnings("unchecked")
@@ -157,7 +151,7 @@ public class SmarterList implements List<Serializable>, Serializable {
     public static SmarterList l(Serializable... args) {
         SmarterList m = new SmarterList();
         for(Serializable v: args)
-            m.add(v);
+            m.add(SmarterMap.smartify(v));
         return m;
     }
 

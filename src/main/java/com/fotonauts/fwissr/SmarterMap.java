@@ -24,8 +24,19 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
     private AtomicBoolean frozen = new AtomicBoolean();
     private Map<String,Serializable> underlying;
 
-    public SmarterMap(Map<String,Serializable> underlying) {
-        this.underlying = underlying;
+    @SuppressWarnings("unchecked")
+    static Serializable smartify(Serializable value) {
+        if(value instanceof Map<?,?> && !(value instanceof SmarterMap))
+            return new SmarterMap((Map<String,Serializable>) value);
+        else if(value instanceof List<?> && !(value instanceof SmarterList))
+            return new SmarterList((List<Serializable>) value);
+        else return value;
+    }
+    
+    public SmarterMap(Map<String,Serializable> source) {
+        this.underlying = new HashMap<>();
+        for(Entry<String,Serializable> entry: source.entrySet())
+            this.underlying.put(entry.getKey(), smartify(entry.getValue()));
     }
 
     public SmarterMap() {
@@ -48,19 +59,12 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         return underlying.containsValue(value);
     }
 
-    @SuppressWarnings("unchecked")
     public Serializable get(Object key) {
-        Serializable r = underlying.get(key);
-        if(r instanceof Map<?,?> && !(r instanceof SmarterMap))
-            return new SmarterMap((Map<String,Serializable>) r);
-        else if(r instanceof List<?> && !(r instanceof SmarterList))
-            return new SmarterList((List<Serializable>) r);
-        else
-            return r;
+        return underlying.get(key);
     }
 
     public Serializable put(String key, Serializable value) {
-        return underlying.put(key, value);
+        return underlying.put(key, smartify(value));
     }
 
     public Serializable remove(Object key) {
