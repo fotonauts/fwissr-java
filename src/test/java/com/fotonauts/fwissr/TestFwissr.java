@@ -16,14 +16,12 @@ public class TestFwissr {
     @Rule
     public TemporaryFolder tmpConfDir = new TemporaryFolder();
 
-    @Before
-    public void setupFwissr() throws IOException {
-        fwissr = new Fwissr(tmpConfDir.getRoot().getCanonicalPath());
-    }
+    @Rule
+    public TemporaryMongo tmpMongo = new TemporaryMongo();
 
     @Test
     public void testGlobalRepository() throws IOException {
-        Fixtures.setupGlobalConf(tmpConfDir);
+        Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);
         assertEquals("bar", fwissr.get("/foo"));
         // assertEquals("baz", fwissr.get("/bar")); // need mongo
         // Fwissr['/cam'].should == { 'en' => { 'bert' => { 'pim' => { 'pam' => [ 'pom', 'pum' ] } } } }

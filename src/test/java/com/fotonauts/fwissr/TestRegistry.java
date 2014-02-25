@@ -12,6 +12,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.File;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -104,6 +106,8 @@ public class TestRegistry {
         Registry reg = new Registry(m("refresh_period", 3));
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", m("refresh", true)));
         assertEquals(m("test", testConf1), reg.dump());
+        
+        new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         Thread.sleep(1000);
         assertEquals(m("test", testConf1), reg.dump());
@@ -115,9 +119,11 @@ public class TestRegistry {
         Registry reg = new Registry(m("refresh_period", 3));
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", m("refresh", true)));
         assertEquals(m("test", testConf1), reg.dump());
+        new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         Thread.sleep(3000);
         assertEquals(m("test", testConf2), reg.dump());
+        new File(tmpConfDir.getRoot().toString() + "/test2.json").delete();
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf3.toJson());
         Thread.sleep(3000);
         assertEquals(m("test", testConf3), reg.dump());
@@ -129,6 +135,7 @@ public class TestRegistry {
         Registry reg = new Registry();
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json"));
         assertEquals(m("test", testConf1), reg.dump());
+        new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         assertEquals(m("test", testConf1), reg.dump());
         reg.reload();

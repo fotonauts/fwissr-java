@@ -1,6 +1,5 @@
 package com.fotonauts.fwissr;
 
-import static com.fotonauts.fwissr.TextUtils.S;
 import static com.fotonauts.fwissr.SmarterMap.m;
 import static com.fotonauts.fwissr.SmarterList.l;
 
@@ -18,45 +17,25 @@ import com.mongodb.Mongo;
 
 public class Fixtures {
 
-    public static void setupGlobalConf(TemporaryFolder tmpConfDir) throws IOException {
+    public static void setupGlobalConf(TemporaryFolder tmpConfDir, TemporaryMongo tmpMongo) throws IOException {
         // create additional file sources
-        File mouarfLolJson = tmpConfDir.newFile("mouarf.lol.json");
-        createTmpConfFile(mouarfLolJson, S(/*{
-                                           "meu" : "ringue",
-                                           "pa" : { "pri" : "ka"}
-                                           }*/));
+        createTmpConfFile(tmpConfDir.newFile("mouarf.lol.yaml"), m("meu", "ringue", "pa", m("pri","ka")).toYaml());
+        createTmpConfFile(tmpConfDir.newFile("trop.mdr.json"), m("gein", "gembre", "pa", m("ta", "teu")).toJson());
+        
+        // create additional mongodb sources
+        createTmpConfCollection(tmpMongo, "roque.fort", m("bar", "baz"));
+        createTmpConfCollection(tmpMongo, "cam.en.bert",  m("pim", m("pam", m("pom", "pum"))));
 
-        File tropMdrJson = tmpConfDir.newFile("trop.mdr.json");
-        createTmpConfFile(tropMdrJson, S(/*{
-                                         "gein" : "gembre",
-                                         "pa" : { "ta" : "teu"}
-                                         }*/));
-        /*
-                // create additional mongodb sources
-                create_tmp_mongo_col("roque.fort", S(/ *{
-                  "bar" : "baz",
-                }* /));
-
-                create_tmp_mongo_col("cam.en.bert", S(/ *
-                  { "pim" : { "pam" : [ "pom", "pum" ] } }
-                * /));
-        */
-        /*
-            { "mongodb"  : "tmp_mongo_db_uri", "collection" : "roque.fort", "top_level" : true },
-            { "mongodb"  : "tmp_mongo_db_uri", "collection" : "cam.en.bert" }
-
-         */
-
-        // create main conf file
-        String fwissrConf = String.format(S(/*
-                                            { "fwissr_sources" : [
-                                            { "filepath" : "%s" },
-                                            { "filepath" : "%s", "top_level" : true }
-                                            ], "fwissr_refresh_period" : 5,  "foo" : "bar" }
-                                            }*/), mouarfLolJson.toString(), tropMdrJson.toString());
-
-        File fwissrJson = tmpConfDir.newFile("fwissr.json");
-        createTmpConfFile(fwissrJson, fwissrConf);
+        String mongodb = String.format("mongodb://%s:%d/fwissr_spec", tmpMongo.getClient().getAddress().getHost(), tmpMongo
+                .getClient().getAddress().getPort());
+        
+        createTmpConfFile(tmpConfDir.newFile("fwissr.json"),
+                m("fwissr_sources", l(
+                    m("filepath", "mouarf.lol.yaml"),
+                    m("filepath", "trop.mdr.json", "top_level", true),
+                    m("mongodb", mongodb, "collection", "roque.fort", "top_level", true),
+                    m("mongodb", mongodb, "collection", "cam.en.bert")
+                ), "fwissr_refresh_period", 5, "foo", "bar").toJson());
     }
 
     public static void createTmpConfFile(File file, String conf) throws IOException {
@@ -65,10 +44,10 @@ public class Fixtures {
         fos.close();
     }
 
-    public static void createTmpConfCollection(Mongo mongo, String collectionName, SmarterMap conf) {
-        mongo.getDB("fwissr_spec").getCollection(collectionName).drop();
+    public static void createTmpConfCollection(TemporaryMongo mongo, String collectionName, SmarterMap conf) {
+        mongo.getClient().getDB("fwissr_spec").getCollection(collectionName).drop();
         for (Map.Entry<String, Serializable> entry : conf.entrySet())
-            mongo.getDB("fwissr_spec").getCollection(collectionName)
+            mongo.getClient().getDB("fwissr_spec").getCollection(collectionName)
                     .insert(new BasicDBObject(SmarterMap.m("_id", entry.getKey(), "value", entry.getValue())));
     }
     

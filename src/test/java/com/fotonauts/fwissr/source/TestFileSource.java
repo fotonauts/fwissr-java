@@ -2,8 +2,10 @@ package com.fotonauts.fwissr.source;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -89,6 +91,7 @@ public class TestFileSource {
         Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", SmarterMap.m("refresh", true));
         SmarterMap fetched1 = s.fetchConf();
         assertEquals(SmarterMap.m("test", testConf1), fetched1);
+        new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         SmarterMap fetched2 = s.fetchConf();
         assertEquals(SmarterMap.m("test", testConf2), fetched2);
@@ -100,6 +103,7 @@ public class TestFileSource {
         Source s = FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json");
         SmarterMap fetched1 = s.getConf();
         assertEquals(SmarterMap.m("test", testConf1), fetched1);
+        new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         SmarterMap fetched2 = s.getConf();
         assertEquals(SmarterMap.m("test", testConf1), fetched2);
@@ -112,6 +116,7 @@ public class TestFileSource {
         SmarterMap fetched1 = s.getConf();
         assertEquals(SmarterMap.m("test", testConf1), fetched1);
 
+        new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         Fixtures.createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         assertEquals(SmarterMap.m("test", testConf1), s.getConf());
         s.reset();
