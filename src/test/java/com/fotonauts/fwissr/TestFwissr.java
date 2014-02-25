@@ -1,43 +1,66 @@
 package com.fotonauts.fwissr;
 
-import static org.junit.Assert.*;
+import static com.fotonauts.fwissr.SmarterList.l;
+import static com.fotonauts.fwissr.SmarterMap.m;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
 import org.junit.Before;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class TestFwissr {
 
-    private Fwissr fwissr;
-
     @Rule
     public TemporaryFolder tmpConfDir = new TemporaryFolder();
 
-    @Rule
-    public TemporaryMongo tmpMongo = new TemporaryMongo();
+    @ClassRule
+    public static TemporaryMongo tmpMongo = new TemporaryMongo();
+    
+    @Before
+    public void clearDatabase() {
+        tmpMongo.getClient().getDB("fwissr_spec").dropDatabase();
+    }
 
     @Test
     public void testGlobalRepository() throws IOException {
         Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);
+        Fwissr fwissr = new Fwissr(tmpConfDir.getRoot().getCanonicalPath());
+        
         assertEquals("bar", fwissr.get("/foo"));
-        // assertEquals("baz", fwissr.get("/bar")); // need mongo
-        // Fwissr['/cam'].should == { 'en' => { 'bert' => { 'pim' => { 'pam' => [ 'pom', 'pum' ] } } } }
-        // Fwissr['/cam/en'].should == { 'bert' => { 'pim' => { 'pam' => [ 'pom', 'pum' ] } } }
-        // Fwissr['/cam/en/bert'].should == { 'pim' => { 'pam' => [ 'pom', 'pum' ] } }
-        // Fwissr['/cam/en/bert/pim'].should == { 'pam' => [ 'pom', 'pum' ] }
-        // Fwissr['/cam/en/bert/pim/pam'].should == [ 'pom', 'pum' ]
-        //assertEquals("gembre", fwissr.get("/gein"));
-        // Fwissr['/mouarf'].should == { 'lol' => { 'meu' => 'ringue', 'pa' => { 'pri' => 'ka'} } }
-        // Fwissr['/mouarf/lol'].should == { 'meu' => 'ringue', 'pa' => { 'pri' => 'ka'} }
-        // Fwissr['/mouarf/lol/meu'].should == 'ringue'
-        // Fwissr['/mouarf/lol/pa'].should == { 'pri' => 'ka'}
-        //assertEquals("ka", fwissr.get("/mouarf/lol/pa/pri"));
-        // Fwissr['/pa'].should == { 'ta' => 'teu'}
-        //assertEquals("teu", fwissr.get("/pa/ta"));
-
+        assertEquals("baz", fwissr.get("/bar"));
+        assertEquals(m("en", m("bert", m("pim", m("pam", l("pom", "pum"))))), fwissr.get("/cam"));
+        assertEquals(m("bert", m("pim", m("pam", l("pom", "pum")))), fwissr.get("/cam/en"));
+        assertEquals(m("pim", m("pam", l("pom", "pum"))), fwissr.get("/cam/en/bert"));
+        assertEquals(m("pam", l("pom", "pum")), fwissr.get("/cam/en/bert/pim"));
+        assertEquals(l("pom", "pum"), fwissr.get("/cam/en/bert/pim/pam"));
+        assertEquals("gembre", fwissr.get("/gein"));
+        assertEquals(m("lol", m("meu", "ringue", "pa", m("pri", "ka"))), fwissr.get("/mouarf"));
+        assertEquals(m("meu", "ringue", "pa", m("pri", "ka")), fwissr.get("/mouarf/lol"));
+        assertEquals("ringue", fwissr.get("/mouarf/lol/meu"));
+        assertEquals(m("pri", "ka"), fwissr.get("/mouarf/lol/pa"));
+        assertEquals("ka", fwissr.get("/mouarf/lol/pa/pri"));
+        assertEquals(m("ta","teu"), fwissr.get("/pa"));
+        assertEquals("teu", fwissr.get("/pa/ta"));
     }
 
+    @Test
+    public void testIgnoreLeadingSlash() throws Exception {
+        Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);
+        Fwissr fwissr = new Fwissr(tmpConfDir.getRoot().getCanonicalPath());
+        
+        assertEquals("bar", fwissr.get("foo"));
+        assertEquals(m("en", m("bert", m("pim", m("pam", l("pom", "pum"))))), fwissr.get("cam"));
+        assertEquals(l("pom", "pum"), fwissr.get("cam/en/bert/pim/pam"));        
+    }
+    
+    @Test
+    public void testReadGlobalRefreshPeriod() throws Exception {
+        Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);
+        Fwissr fwissr = new Fwissr(tmpConfDir.getRoot().getCanonicalPath());
+        assertEquals(5, fwissr.getGlobalRegistry().getRefreshPeriod());
+    }
 }

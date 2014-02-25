@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-
 import com.fotonauts.fwissr.source.Source;
 
 public class Fwissr {
@@ -62,15 +61,19 @@ public class Fwissr {
 
     private Registry globalRegistry;
 
-    // FIXME ~user conf
-    private synchronized Registry getGlobalRegistry() {
+    @SuppressWarnings("unchecked")
+    public synchronized Registry getGlobalRegistry() {
         if (globalRegistry == null) {
-            globalRegistry = new Registry(SmarterMap.m("refresh_period", getMainConf().get("fwissr_refresh_period")));
+            SmarterMap registryParams = new SmarterMap();
+            Serializable period = getMainConf().get("fwissr_refresh_period"); 
+            if(period != null)
+                registryParams.put("refresh_period", period);
+            globalRegistry = new Registry(registryParams);
             if(mainConfPath.exists())
                 globalRegistry.addSource(Source.fromSettings(SmarterMap.m("filepath", mainConfPath.toString())));
             if(mainConf.containsKey("fwissr_sources")) {
                 for(Serializable s: (List<Serializable>) mainConf.get("fwissr_sources")) {
-                    globalRegistry.addSource(Source.fromSettings(new SmarterMap((Map) s)));
+                    globalRegistry.addSource(Source.fromSettings((SmarterMap) s));
                 }
             }
         }

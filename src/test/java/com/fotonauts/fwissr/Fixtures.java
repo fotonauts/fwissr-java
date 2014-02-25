@@ -24,15 +24,15 @@ public class Fixtures {
         
         // create additional mongodb sources
         createTmpConfCollection(tmpMongo, "roque.fort", m("bar", "baz"));
-        createTmpConfCollection(tmpMongo, "cam.en.bert",  m("pim", m("pam", m("pom", "pum"))));
+        createTmpConfCollection(tmpMongo, "cam.en.bert",  m("pim", m("pam", l("pom", "pum"))));
 
         String mongodb = String.format("mongodb://%s:%d/fwissr_spec", tmpMongo.getClient().getAddress().getHost(), tmpMongo
                 .getClient().getAddress().getPort());
         
         createTmpConfFile(tmpConfDir.newFile("fwissr.json"),
                 m("fwissr_sources", l(
-                    m("filepath", "mouarf.lol.yaml"),
-                    m("filepath", "trop.mdr.json", "top_level", true),
+                    m("filepath", tmpConfDir.getRoot() + "/mouarf.lol.yaml"),
+                    m("filepath", tmpConfDir.getRoot() + "/trop.mdr.json", "top_level", true),
                     m("mongodb", mongodb, "collection", "roque.fort", "top_level", true),
                     m("mongodb", mongodb, "collection", "cam.en.bert")
                 ), "fwissr_refresh_period", 5, "foo", "bar").toJson());

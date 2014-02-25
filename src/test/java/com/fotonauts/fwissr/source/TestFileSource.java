@@ -1,11 +1,13 @@
 package com.fotonauts.fwissr.source;
 
+import static com.fotonauts.fwissr.Fixtures.createTmpConfFile;
+import static com.fotonauts.fwissr.Fixtures.testConf1;
+import static com.fotonauts.fwissr.Fixtures.testConf2;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -14,8 +16,6 @@ import org.junit.rules.TemporaryFolder;
 import com.fotonauts.fwissr.Fixtures;
 import com.fotonauts.fwissr.FwissrRuntimeException;
 import com.fotonauts.fwissr.SmarterMap;
-
-import static com.fotonauts.fwissr.Fixtures.*;
 
 public class TestFileSource {
 
