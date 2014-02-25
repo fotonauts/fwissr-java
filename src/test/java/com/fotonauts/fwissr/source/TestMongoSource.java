@@ -23,8 +23,8 @@ public class TestMongoSource {
     public void cleanDatabase() {
         tmongo.getClient().getDB("fwissr_spec").dropDatabase();
     }
-    
-    
+
+
     private String uriPrefix() {
         return String.format("mongodb://%s:%d", tmongo.getClient().getAddress().getHost(), tmongo.getClient().getAddress()
                 .getPort());

@@ -21,14 +21,14 @@ public class Fixtures {
         // create additional file sources
         createTmpConfFile(tmpConfDir.newFile("mouarf.lol.yaml"), m("meu", "ringue", "pa", m("pri","ka")).toYaml());
         createTmpConfFile(tmpConfDir.newFile("trop.mdr.json"), m("gein", "gembre", "pa", m("ta", "teu")).toJson());
-        
+
         // create additional mongodb sources
         createTmpConfCollection(tmpMongo, "roque.fort", m("bar", "baz"));
         createTmpConfCollection(tmpMongo, "cam.en.bert",  m("pim", m("pam", l("pom", "pum"))));
 
         String mongodb = String.format("mongodb://%s:%d/fwissr_spec", tmpMongo.getClient().getAddress().getHost(), tmpMongo
                 .getClient().getAddress().getPort());
-        
+
         createTmpConfFile(tmpConfDir.newFile("fwissr.json"),
                 m("fwissr_sources", l(
                     m("filepath", tmpConfDir.getRoot() + "/mouarf.lol.yaml"),
@@ -50,14 +50,14 @@ public class Fixtures {
             mongo.getClient().getDB("fwissr_spec").getCollection(collectionName)
                     .insert(new BasicDBObject(SmarterMap.m("_id", entry.getKey(), "value", entry.getValue())));
     }
-    
+
     public static void dumpMongo(Mongo mongo) {
         for(String database: mongo.getDatabaseNames()) {
             System.err.println("DATABASE " + database);
             for(String collection: mongo.getDB(database).getCollectionNames()) {
-                System.err.println("  collection " + collection);                
+                System.err.println("  collection " + collection);
                 for(DBObject doc: mongo.getDB(database).getCollection(collection).find()) {
-                    System.err.println("    - " + doc.toString());                
+                    System.err.println("    - " + doc.toString());
                 }
             }
         }

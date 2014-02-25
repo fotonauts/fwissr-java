@@ -65,7 +65,7 @@ public class Fwissr {
     public synchronized Registry getGlobalRegistry() {
         if (globalRegistry == null) {
             SmarterMap registryParams = new SmarterMap();
-            Serializable period = getMainConf().get("fwissr_refresh_period"); 
+            Serializable period = getMainConf().get("fwissr_refresh_period");
             if(period != null)
                 registryParams.put("refresh_period", period);
             globalRegistry = new Registry(registryParams);

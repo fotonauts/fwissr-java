@@ -19,7 +19,7 @@ public class TestFwissr {
 
     @ClassRule
     public static TemporaryMongo tmpMongo = new TemporaryMongo();
-    
+
     @Before
     public void clearDatabase() {
         tmpMongo.getClient().getDB("fwissr_spec").dropDatabase();
@@ -29,7 +29,7 @@ public class TestFwissr {
     public void testGlobalRepository() throws IOException {
         Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);
         Fwissr fwissr = new Fwissr(tmpConfDir.getRoot().getCanonicalPath());
-        
+
         assertEquals("bar", fwissr.get("/foo"));
         assertEquals("baz", fwissr.get("/bar"));
         assertEquals(m("en", m("bert", m("pim", m("pam", l("pom", "pum"))))), fwissr.get("/cam"));
@@ -51,12 +51,12 @@ public class TestFwissr {
     public void testIgnoreLeadingSlash() throws Exception {
         Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);
         Fwissr fwissr = new Fwissr(tmpConfDir.getRoot().getCanonicalPath());
-        
+
         assertEquals("bar", fwissr.get("foo"));
         assertEquals(m("en", m("bert", m("pim", m("pam", l("pom", "pum"))))), fwissr.get("cam"));
-        assertEquals(l("pom", "pum"), fwissr.get("cam/en/bert/pim/pam"));        
+        assertEquals(l("pom", "pum"), fwissr.get("cam/en/bert/pim/pam"));
     }
-    
+
     @Test
     public void testReadGlobalRefreshPeriod() throws Exception {
         Fixtures.setupGlobalConf(tmpConfDir, tmpMongo);

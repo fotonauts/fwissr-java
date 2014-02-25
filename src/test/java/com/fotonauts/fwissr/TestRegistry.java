@@ -99,14 +99,14 @@ public class TestRegistry {
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", m("refresh", true)));
         assertNotNull(reg.refreshThread);
     }
-    
+
     @Test
     public void testNoRefreshBeforePeriod() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
         Registry reg = new Registry(m("refresh_period", 3));
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json", m("refresh", true)));
         assertEquals(m("test", testConf1), reg.dump());
-        
+
         new File(tmpConfDir.getRoot().toString() + "/test.json").delete();
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf2.toJson());
         Thread.sleep(1000);
@@ -129,7 +129,7 @@ public class TestRegistry {
         Thread.sleep(3000);
         assertEquals(m("test", testConf3), reg.dump());
     }
-    
+
     @Test
     public void testReloads() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
@@ -142,7 +142,7 @@ public class TestRegistry {
         reg.reload();
         assertEquals(m("test", testConf2), reg.dump());
     }
-    
+
     @Test(expected=UnsupportedOperationException.class)
     public void testMapsAreFrozen() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
@@ -150,7 +150,7 @@ public class TestRegistry {
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test.json"));
         ((SmarterMap) reg.get("/test/cam")).put("foo", "baz");
     }
-    
+
     @Test(expected=UnsupportedOperationException.class)
     public void testMapsAreFrozenAfterReload() throws Exception {
         createTmpConfFile(tmpConfDir.newFile("test.json"), testConf1.toJson());
@@ -161,5 +161,5 @@ public class TestRegistry {
         reg.addSource(FileSource.fromPath(tmpConfDir.getRoot().toString() + "/test2.json"));
         ((SmarterMap) reg.get("/test/cam")).put("foo", "baz");
     }
-    
+
 }
