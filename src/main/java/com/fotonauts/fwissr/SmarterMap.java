@@ -109,8 +109,15 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
     }
 
     public void freeze() {
-        if(!frozen.getAndSet(true))
+        if(!frozen.getAndSet(true)) {
+            for(Serializable s: underlying.values()) {
+                if(s instanceof SmarterMap)
+                    ((SmarterMap) s).freeze();
+                else if(s instanceof SmarterList)
+                    ((SmarterList) s).freeze();
+            }
             underlying = Collections.unmodifiableMap(underlying);
+        }        
     }
 
     @SuppressWarnings("unchecked")

@@ -33,7 +33,7 @@ public abstract class Source {
         return conf;
     }
 
-    private boolean canRefresh() {
+    public boolean canRefresh() {
         return options.get("refresh") == Boolean.TRUE;
     }
 

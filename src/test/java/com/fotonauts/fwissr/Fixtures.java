@@ -87,4 +87,5 @@ public class Fixtures {
     public static SmarterMap testConf1 = m("foo", "bar", "cam", m("en", "bert"), "conf", 1);
     public static SmarterMap testConf2 = m("jean", "bon", "terieur", m("alain", "alex"), "conf", 2);
     public static SmarterMap testConf3 = m("jean", "bon", "cam", m("et", "rat"), "conf", 3, "foo", "baz");
+    public static SmarterMap testConf4 = m("foo", "bar", "jean", l("bon", "rage"), "cam", m("en", m("bert", "coulant")));
 }
