@@ -21,7 +21,7 @@ public class MongodbSource extends Source {
 
     public final static Set<String> TOP_LEVEL_COLLECTIONS = Collections.unmodifiableSet(Collections.singleton("fwissr"));
 
-    private static Pattern pattern = Pattern.compile("mongodb://(?<hostname>[^:/]+)(:(?<port>[0-9]+))?/(?<dbname>.*)");
+    private static Pattern pattern = Pattern.compile("mongodb://(?<hostname>[^:/]+)(:(?<port>[0-9]+))?/(?<dbname>[^?]*)(?:\\?.*)?");
 
     private static Map<String, MongoClient> mongoClientCache = new HashMap<>();
 

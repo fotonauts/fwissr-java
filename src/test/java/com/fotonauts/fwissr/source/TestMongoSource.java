@@ -3,6 +3,7 @@ package com.fotonauts.fwissr.source;
 import static com.fotonauts.fwissr.Fixtures.createTmpConfCollection;
 import static com.fotonauts.fwissr.Fixtures.testConf1;
 import static com.fotonauts.fwissr.Fixtures.testConf2;
+import static org.junit.Assert.*;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
@@ -34,6 +35,18 @@ public class TestMongoSource {
     public void testInstantiateFromURI() {
         createTmpConfCollection(tmongo, "test", SmarterMap.m("rootkey", SmarterMap.m("foo", "bar")));
         Source source = Source.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec", "collection", "test"));
+        assertEquals(MongodbSource.class, source.getClass());
+        DBCollection collection = ((MongodbSource) source).collection;
+        assertEquals("test", collection.getName());
+        assertEquals("fwissr_spec", collection.getDB().getName());
+        assertEquals(1, collection.count());
+        assertEquals(1, collection.find(new BasicDBObject("_id", "rootkey")).count());
+    }
+
+    @Test
+    public void testShouldIgnoreDatabaseConnectionParameter() throws Exception {
+        createTmpConfCollection(tmongo, "test", SmarterMap.m("rootkey", SmarterMap.m("foo", "bar")));
+        Source source = Source.fromSettings(SmarterMap.m("mongodb", uriPrefix() + "/fwissr_spec?param1=value1&param2=value2", "collection", "test"));
         assertEquals(MongodbSource.class, source.getClass());
         DBCollection collection = ((MongodbSource) source).collection;
         assertEquals("test", collection.getName());

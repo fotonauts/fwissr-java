@@ -55,7 +55,7 @@
 	<distributionManagement>
 		<site>
 			<id>s3.site</id>
-			<url>s3://maven-fotonauts/site</url>
+			<url>s3://maven-fotonauts/fwissr-java</url>
 		</site>
 		<repository>
 			<id>s3.release</id>
@@ -88,12 +88,13 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
-			<version>2.10.1</version>
+			<version>2.11.4</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>4.11</version>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
