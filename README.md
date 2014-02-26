@@ -9,7 +9,7 @@ by [Fotonauts](http://www.fotopedia.com).
 Scope
 =====
 
-Fwissr Java focus on the "library" aspect of fwissr : accessing configuration from java code.
+Fwissr Java focus on the "library" aspect of fwissr: accessing configuration from java code.
 
 The command line query tool is not available, so you may want to setup the ruby or python port to complement it.
 
@@ -37,8 +37,8 @@ Fwissr fwissr = new Fwissr("/etc/fwissr");
 fwissr.get("/stuff/foo");
 ```
 
-SmaterList and SmarterMap
-=========================
+SmarterList and SmarterMap
+==========================
 
 They were initially designed to offer some feature than are a bit difficult to use with java maps and lists, 
 like deep freeze or deep cloning. But they also come in very handy when instantiating pseudo-litteral 
@@ -61,8 +61,8 @@ More customization
 ==================
 
 The java port allows the same extensions than the ruby port:
-    - registries can be set up programatically
-    - alternative subclasses of com.fotonauts.fwissr.Source can be implemented
+- registries can be set up programatically
+- alternative subclasses of com.fotonauts.fwissr.Source can be implemented
 
 Credits
 =======
@@ -71,6 +71,6 @@ From Fotonauts:
 
 - Aymerick Jéhanne [@aymerick](https://twitter.com/aymerick)
 - Pierre Baillet [@octplane](https://twitter.com/octplane)
-- Mathieu Poumeyrol (http://gihub.com/kali)
+- Mathieu Poumeyrol (http://github.com/kali)
 
 Copyright (c) 2013-2014 Fotonauts released under the ASF license.
