@@ -4,6 +4,16 @@
 	<artifactId>fwissr</artifactId>
 	<version>0.0.3-SNAPSHOT</version>
 	<name>Fwissr-java</name>
+    <packaging>jar</packaging>
+    <description>Java implementation of Fwissr configuration repository</description>
+    <url>https://github.com/fotonauts/fwissr-java</url>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.junit.jvmargs>-XX:MaxPermSize=512M</maven.junit.jvmargs>
@@ -31,27 +41,41 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<extensions>
-			<extension>
-				<groupId>org.kuali.maven.wagons</groupId>
-				<artifactId>maven-s3-wagon</artifactId>
-				<version>1.1.22</version>
-			</extension>
-		</extensions>
 	</build>
 	<scm>
+        <url>https://github.com/fotonauts/fwissr-java</url>
 		<connection>scm:git:ssh://git@github.com/fotonauts/fwissr-java.git</connection>
 	</scm>
-	<repositories>
-		<repository>
-			<id>central</id>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>asf</id>
-			<url>http://repository.apache.org/snapshots/</url>
-		</repository>
-	</repositories>
+    <developers>
+        <developer>
+            <id>aymerick</id>
+            <name>Aymerick Jehanne</name>
+            <email>aymerick@fotonauts.com</email>
+            <organization>Fotonauts</organization>
+            <organizationUrl>http://www.fotopedia.com/</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <id>kali</id>
+            <name>Mathieu Poumeyrol</name>
+            <email>kali@fotonauts.com</email>
+            <organization>Fotonauts</organization>
+            <organizationUrl>http://www.fotopedia.com/</organizationUrl>
+            <roles>
+                <role>architect</role>
+                <role>developer</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+    </developers>
+    <issueManagement>
+        <system>github</system>
+        <url>https://github.com/fotonauts/fwissr-java/issues</url>
+    </issueManagement>
 	<distributionManagement>
 		<site>
 			<id>s3.site</id>
