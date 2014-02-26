@@ -10,16 +10,20 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 
+/**
+ * Convenient wrapper around {@link List}.
+ * 
+ * <p>Allows to represent with a consistent set of classes the hierarchical configuration
+ * fetched from the various sources.
+ * 
+ * @author kali
+ *
+ */
 public class SmarterList implements List<Serializable>, Serializable {
 
     private static final long serialVersionUID = 1L;
-
-    protected static ObjectMapper jsonObjectMapper = new ObjectMapper();
-    protected static ObjectMapper yamlObjectMapper = new ObjectMapper(new YAMLFactory());
 
     private AtomicBoolean frozen = new AtomicBoolean();
     private List<Serializable> underlying;
@@ -134,15 +138,21 @@ public class SmarterList implements List<Serializable>, Serializable {
         return underlying.get(key);
     }
 
+    /**
+     * Deep clone.
+     */
     @SuppressWarnings("unchecked")
     public SmarterList clone() {
         try {
-            return new SmarterList(jsonObjectMapper.readValue(jsonObjectMapper.writeValueAsBytes(underlying), List.class));
+            return new SmarterList(Fwissr.jsonObjectMapper.readValue(Fwissr.jsonObjectMapper.writeValueAsBytes(underlying), List.class));
         } catch (IOException e) {
             throw new FwissrRuntimeException("failed to clone list: ", e);
         }
     }
 
+    /**
+     * Deep freeze.
+     */
     public void freeze() {
         if(!frozen.getAndSet(true)) {
             for(Serializable s: underlying) {
@@ -155,6 +165,9 @@ public class SmarterList implements List<Serializable>, Serializable {
         }
     }
 
+    /**
+     * Convenient constructor for pseudo-litteral.
+     */
     public static SmarterList l(Serializable... args) {
         SmarterList m = new SmarterList();
         for(Serializable v: args)
@@ -172,16 +185,11 @@ public class SmarterList implements List<Serializable>, Serializable {
     }
 
     public String toDebugString() {
-        ObjectWriter w = jsonObjectMapper.writer().withDefaultPrettyPrinter();
-        try {
-            return w.writeValueAsString(underlying);
-        } catch (IOException e) {
-            throw new FwissrRuntimeException("failed to dump content");
-        }
+        return toJson();
     }
 
     public String toJson() {
-        ObjectWriter w = jsonObjectMapper.writer();
+        ObjectWriter w = Fwissr.jsonObjectMapper.writer();
         try {
             return w.writeValueAsString(underlying);
         } catch (IOException e) {
@@ -190,7 +198,7 @@ public class SmarterList implements List<Serializable>, Serializable {
     }
 
     public String toYaml() {
-        ObjectWriter w = yamlObjectMapper.writer();
+        ObjectWriter w = Fwissr.yamlObjectMapper.writer();
         try {
             return w.writeValueAsString(underlying);
         } catch (IOException e) {

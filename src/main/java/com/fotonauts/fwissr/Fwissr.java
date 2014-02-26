@@ -10,6 +10,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fotonauts.fwissr.source.Source;
 
+/**
+ * Main entry point for fwissr.
+ * <p>Interacting with this class should be enough in most use cases.
+ * 
+ * <p>Fwissr is first created by passing the constructor a configuration folder, 
+ * then configuration lookups are performed using the {@link #get(String)} method.
+ * 
+ * <p>A unique Fwissr instance can be shared in multi-threaded application.
+ * 
+ * <p>More information: <a href="http://github.com/fotonauts/fwissr">fwissr-ruby</a>
+ * (definitely worth a read) and <a href="http://github.com/fotonauts/fwissr-java">fwissr</a>.
+ * 
+ * @author kali
+ *
+ */
 public class Fwissr {
 
     private final static String MAIN_CONF_FILE = "fwissr.json";
@@ -18,10 +33,22 @@ public class Fwissr {
 
     private File mainConfPath;
 
+    /**
+     * Creates a Fwissr instance.
+     * 
+     * @param mainConfPath the main path location
+     */
     public Fwissr(String mainConfPath) {
         this.mainConfPath = new File(mainConfPath);
     }
 
+    /**
+     * Parse a json or yaml file to a semi-structured internal format.
+     * 
+     * @param confFilePath the {@link File} to read
+     * @return the parsed content as a SmaterMap
+     * @throws FwissrRuntimeException if anything goes wrong.
+     */
     @SuppressWarnings("unchecked")
     public static SmarterMap parseConfFile(File confFilePath) {
         try {
@@ -39,6 +66,12 @@ public class Fwissr {
         }
     }
 
+    /**
+     * Lookup a configuration value in the repository.
+     * 
+     * @param key the key to lookup
+     * @return the found value (or null)
+     */
     public Serializable get(String key) {
         return getGlobalRegistry().get(key);
     }

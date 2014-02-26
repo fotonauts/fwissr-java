@@ -11,6 +11,17 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.fotonauts.fwissr.source.Source;
 
+/**
+ * Aggregated configuration from several sources.   
+ * 
+ * <p>Allows more flexibility than using {@link Fwissr} (for custom sources, for instances). The price being
+ * Source have to be setup programmatically.
+ * 
+ * Registry will periodically refresh the configuration from sources allowing it.
+ * 
+ * @author kali
+ *
+ */
 public class Registry {
 
     public static int DEFAULT_REFRESH_PERIOD = 30;
@@ -20,15 +31,30 @@ public class Registry {
     private List<Source> sources = new LinkedList<>();
     public Thread refreshThread;
 
+    /**
+     * Creates a registry.
+     * 
+     * The params can contains a "refresh_period" value (in seconds) to override the default (30 seconds).
+     * 
+     * @param params can contains a "refresh_period" (in seconds)
+     */
     public Registry(SmarterMap params) {
         refreshPeriodMS = 1000 * (params.containsKey("refresh_period") ? ((Integer) (params.get("refresh_period")))
                 : DEFAULT_REFRESH_PERIOD);
     }
 
+    /**
+     * Creates a registry.
+     */
     public Registry() {
         new Registry(SmarterMap.m());
     }
 
+    /**
+     * Add a source to the registry.
+     * 
+     * @param source the source to add
+     */
     public synchronized void addSource(Source source) {
         sources.add(source);
         if (registry.isFrozen()) {
@@ -39,6 +65,9 @@ public class Registry {
         ensureRefreshThread();
     }
 
+    /**
+     * Starts the background refreshing thread.
+     */
     private synchronized void ensureRefreshThread() {
         if (refreshPeriodMS > 0 && haveAtLeastOneRefreshableSource() && (refreshThread == null || !refreshThread.isAlive())) {
             refreshThread = new Thread() {
@@ -66,6 +95,9 @@ public class Registry {
         return false;
     }
 
+    /**
+     * Force a registry reload.
+     */
     public synchronized void reload() {
         reset();
         load();
@@ -84,20 +116,41 @@ public class Registry {
             source.reset();
     }
 
+    /**
+     * Access the refresh period in milliseconds.
+     * 
+     * @return the refresh period in milliseconds. 
+     */
     public long getRefreshPeriodMS() {
         return refreshPeriodMS;
     }
 
+    /**
+     * Access the refresh period in seconds.
+     * 
+     * @return the refresh period in seconds. 
+     */
     public int getRefreshPeriod() {
         return (int) (refreshPeriodMS / 1000);
     }
 
+    /**
+     * Access the loaded configuration as a whole.
+     * 
+     * @return the configuration content.
+     */
     public synchronized SmarterMap getRegistry() {
         ensureRefreshThread();
         registry.freeze();
         return registry;
     }
 
+    /**
+     * Lookup a configuration property.
+     * 
+     * @param key the configuration to read
+     * @return the read value
+     */
     public Serializable get(String key) {
         String[] keyAsArray = key.split("/");
         if (keyAsArray.length > 0 && keyAsArray[0].equals(""))
@@ -111,10 +164,20 @@ public class Registry {
         return current;
     }
 
+    /**
+     * Dump the content to a pretty printed json string. 
+     * 
+     * @return a pretty content
+     */
     public String toDebugString() {
         return getRegistry().toDebugString();
     }
 
+    /**
+     * List all keys (and subkeys) from the configuration.
+     *  
+     * @return a list of keys
+     */
     public List<String> getKeys() {
         List<String> result = new LinkedList<>();
         getKeys(result, new ArrayList<String>(), getRegistry());
@@ -132,6 +195,9 @@ public class Registry {
         }
     }
 
+    /**
+     * @see GetRegistry.
+     */
     public SmarterMap dump() {
         return getRegistry();
     }

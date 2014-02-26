@@ -12,6 +12,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+/**
+ * Convenient wrapper around {@link Map}.
+ * 
+ * <p>Allows to represent with a consistent set of classes the hierarchical configuration
+ * fetched from the various sources.
+ * 
+ * @author kali
+ *
+ */
 public class SmarterMap implements Map<String, Serializable>, Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -95,6 +104,9 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         return underlying.hashCode();
     }
 
+    /**
+     * Deep clone.
+     */
     @SuppressWarnings("unchecked")
     public SmarterMap clone() {
         try {
@@ -105,6 +117,9 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         }
     }
 
+    /**
+     * Deep freeze.
+     */
     public void freeze() {
         if (!frozen.getAndSet(true)) {
             for (Serializable s : underlying.values()) {
@@ -117,6 +132,11 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         }
     }
 
+    /**
+     * Merge recursively nested objects.
+     * 
+     * @param other the source to merge data from.
+     */
     @SuppressWarnings("unchecked")
     public void mergeAll(Map<String, Serializable> other) {
         for (Entry<String, Serializable> e : other.entrySet()) {
@@ -128,6 +148,12 @@ public class SmarterMap implements Map<String, Serializable>, Serializable {
         }
     }
 
+    /**
+     * Convenient helper for pseudp-litterals.
+     * 
+     * @param args an even number of values, representing map entry by consecutive pairs.  
+     * @return a map
+     */
     public static SmarterMap m(Serializable... args) {
         if (args.length % 2 == 1)
             throw new FwissrRuntimeException("attempts at building a map with an odd number of arguments");
