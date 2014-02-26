@@ -50,7 +50,7 @@ import static com.fotonauts.fwissr.SmarterMap.m;
 [...]
 SmarterMap jsonObject = m(
         "some_list", l("value1", "value2"), 
-        "some_sub_object", m("inner", "field) 
+        "some_sub_object", m("inner", "field") 
 );
 System.err.println(jsonObject.toYaml);
 System.err.println(jsonObject.toJson);
