@@ -1,6 +1,8 @@
 Fwissr Java
 ===========
 
+[![Build Status](https://travis-ci.org/fotonauts/fwissr.png)](https://travis-ci.org/fotonauts/fwissr)
+
 Java port for [fwissr](http://github.com/fotonauts/fwissr), a simple configuration registry tool
 by [Fotonauts](http://www.fotopedia.com).
 
@@ -23,7 +25,7 @@ In your pom.xml...
       <groupId>com.fotonauts</groupId>
       <artifactId>fwissr</artifactId>
       <version>0.0.2</version>
-  </dependency
+  </dependency>
 ```
 
 and in your code
@@ -31,8 +33,8 @@ and in your code
 ```Java
 import com.fotonauts.fwissr;
 [...]
-Fwissr fwissr = new Fwissr("/etc/fwissr")
-fwissr.get("/stuff/foo")
+Fwissr fwissr = new Fwissr("/etc/fwissr");
+fwissr.get("/stuff/foo");
 ```
 
 SmaterList and SmarterMap
@@ -49,9 +51,9 @@ import static com.fotonauts.fwissr.SmarterMap.m;
 SmarterMap jsonObject = m(
         "some_list", l("value1", "value2"), 
         "some_sub_object", m("inner", "field) 
-)
-System.err.println(jsonObject.toYaml)
-System.err.println(jsonObject.toJson)
+);
+System.err.println(jsonObject.toYaml);
+System.err.println(jsonObject.toJson);
 ```
 
 
