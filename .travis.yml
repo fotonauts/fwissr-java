@@ -1,2 +1,3 @@
---
-  language: java
+language: java
+services: mongodb
+env: PRESET_LOCAL_MONGODB=true

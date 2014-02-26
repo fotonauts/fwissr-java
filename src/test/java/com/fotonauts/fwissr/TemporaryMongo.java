@@ -21,19 +21,24 @@ public class TemporaryMongo extends ExternalResource {
     @Override
     public void before() throws Exception {
 
-        MongodStarter runtime = MongodStarter.getDefaultInstance();
-        int port = Network.getFreeServerPort();
-        _mongodExe = runtime.prepare(new MongodConfigBuilder().version(Version.Main.PRODUCTION).net(new Net(port, false)).build());
-        _mongod = _mongodExe.start();
+        if(!("true").equals(System.getenv("PRESET_LOCAL_MONGODB"))) {
+            MongodStarter runtime = MongodStarter.getDefaultInstance();
+            int port = Network.getFreeServerPort();
+            _mongodExe = runtime.prepare(new MongodConfigBuilder().version(Version.Main.PRODUCTION).net(new Net(port, false)).build());
+            _mongod = _mongodExe.start();
+            mongo = new MongoClient("127.0.0.1", port);
+        } else
+            mongo = new MongoClient("127.0.0.1", 27017);
 
-        mongo = new MongoClient("127.0.0.1", port);
     }
 
     @Override
     public void after() {
         try {
-            _mongod.stop();
-            _mongodExe.stop();
+            if(!("true").equals(System.getenv("PRESET_LOCAL_MONGODB"))) {
+                _mongod.stop();
+                _mongodExe.stop();
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
