@@ -7,6 +7,11 @@
     <packaging>jar</packaging>
     <description>Java implementation of Fwissr configuration repository</description>
     <url>https://github.com/fotonauts/fwissr-java</url>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>7</version>
+    </parent>
     <licenses>
         <license>
             <name>The Apache Software License, Version 2.0</name>
@@ -43,8 +48,9 @@
 		</plugins>
 	</build>
 	<scm>
-        <url>https://github.com/fotonauts/fwissr-java</url>
+        <url>git@github.com:fotonauts/fwissr-java.git</url>
 		<connection>scm:git:ssh://git@github.com/fotonauts/fwissr-java.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/fotonauts/fwissr-java.git</developerConnection>
 	</scm>
     <developers>
         <developer>
@@ -76,20 +82,6 @@
         <system>github</system>
         <url>https://github.com/fotonauts/fwissr-java/issues</url>
     </issueManagement>
-	<distributionManagement>
-		<site>
-			<id>s3.site</id>
-			<url>s3://maven-fotonauts/fwissr-java</url>
-		</site>
-		<repository>
-			<id>s3.release</id>
-			<url>s3://maven-fotonauts/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>s3.snapshot</id>
-			<url>s3://maven-fotonauts/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>org.slf4j</groupId>
